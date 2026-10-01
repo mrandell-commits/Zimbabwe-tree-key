@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#315b3b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Zimbabwe Trees">
+<link rel="manifest" href="manifest.json">
+<title>Zimbabwe Tree Key</title>
+<style>
+:root{--green:#315b3b;--light:#f5f3e8;--card:#fff;--text:#20251f;--muted:#687064;--line:#d9ddcf}
+*{box-sizing:border-box} body{margin:0;background:var(--light);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--green);color:white;padding:18px 16px 14px;position:sticky;top:0;z-index:5}
+h1{font-size:25px;margin:0 0 4px} header p{margin:0;opacity:.9;font-size:13px}.tools{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}.tools button{flex:1;min-width:130px}.badge{display:inline-block;padding:4px 7px;border-radius:7px;background:#edf0e7;color:#405044;font-size:11px;font-weight:700;margin:3px 3px 0 0}.photo{min-height:150px;border-radius:11px;background:linear-gradient(135deg,#e9eadf,#d9ddcf);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#667064;font-size:13px;margin:10px 0;overflow:hidden;position:relative}.photo img{width:100%;height:180px;object-fit:cover}.photo small{font-size:10px;background:#ffffffd9;padding:3px 6px;align-self:stretch}.sectiontitle{font-size:15px;font-weight:700;margin:17px 0 7px}
+main{max-width:850px;margin:auto;padding:14px 14px 90px}
+.search{width:100%;padding:14px 15px;border-radius:12px;border:1px solid var(--line);font-size:17px;background:white;margin-bottom:12px}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:12px} button,.chip{border:1px solid var(--line);background:white;border-radius:10px;padding:10px 12px;font-weight:600;white-space:nowrap}
+button.active{background:var(--green);color:white;border-color:var(--green)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0;box-shadow:0 1px 2px #0000000a}
+.card h2{font-size:19px;margin:0 0 2px} .latin{font-style:italic;color:var(--muted);font-size:14px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px} .fact{background:#f7f8f3;padding:9px;border-radius:9px;font-size:13px} .fact b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.note{margin-top:10px;line-height:1.5} .small{color:var(--muted);font-size:13px}
+.hero{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:14px}
+.hero h2{margin:0 0 7px} .question{font-size:19px;font-weight:700;margin-bottom:10px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:8px} .answers button{text-align:left;padding:13px}
+.hidden{display:none!important} .count{margin:7px 0;color:var(--muted);font-size:13px}
+footer{padding:20px 0;color:var(--muted);font-size:12px;line-height:1.5}
+a{color:var(--green);font-weight:600}
+@media(max-width:520px){.grid,.answers{grid-template-columns:1fr}}
+
+.compare-card{border:1px solid #cfcfcf;border-radius:14px;padding:14px;background:#fff}.compare-card h3{margin:.15rem 0}.compare-card .latin{font-style:italic;color:#555}.compare-card ul{padding-left:1.15rem}.score-badge{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 8px;font-size:.8rem}.compare-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.id-result-note{margin:.6rem 0;padding:.7rem;border-radius:10px;background:#f5f5f5}
+
+.visual-tile{border:1px solid #d1d1d1;border-radius:14px;padding:13px;background:#fff}
+.visual-tile h3{margin:.1rem 0 .25rem}.visual-tile .latin{font-style:italic;color:#555}
+.visual-tile .clue{font-size:.94rem}.visual-source{margin-top:9px}
+.visual-source button{padding:.45rem .65rem;border-radius:9px;border:1px solid #bbb;background:#fff}
+
+.tree-photo{width:100%;max-height:260px;object-fit:cover;border-radius:12px;display:block;margin-bottom:7px}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.photo-tile{border:1px solid #d1d1d1;border-radius:13px;padding:8px;background:#fff}
+.photo-tile img{width:100%;height:150px;object-fit:cover;border-radius:9px}
+.photo-tile .latin{font-style:italic;color:#555;font-size:.85rem}
+.photo-missing{padding:35px 8px;text-align:center;background:#f3f3f3;border-radius:9px}
+</style>
+</head>
+<body>
+<header>
+<h1>🌳 Zimbabwe Tree Key</h1>
+<p>Field guide for Zimbabwe • Matabeleland & nationwide</p>
+</header>
+<main>
+<section class="hero">
+<h2>Identify a tree</h2>
+<div class="question" id="q">Start with the leaves: what do you see?</div>
+<div class="answers" id="answers"></div>
+<p class="small" id="progress">Step 1 of 4</p>
+</section>
+
+<div class="tools">
+<button onclick="useLocation()">📍 Trees near me</button>
+<button onclick="showRandom()">🌳 Random tree</button>
+</div>
+<input class="search" id="search" placeholder="Search common or scientific name…" autocomplete="off">
+<div class="tabs">
+<button data-filter="names">Local names</button>
+<button class="active" data-filter="all">All</button>
+<button data-filter="matabeleland">Matabeleland</button>
+<button data-filter="dry">Dry country</button>
+<button data-filter="miombo">Miombo</button>
+<button data-filter="river">Rivers / wet</button>
+</div>
+<div class="count" id="count"></div>
+<div id="list"></div>
+
+<section class="hero"><h2>Matabeleland regions</h2>
+<div class="tabs"><button onclick="regionalSearch('Matobo')">Matobo / granite</button><button onclick="regionalSearch('Hwange')">Hwange</button><button onclick="regionalSearch('Victoria Falls')">Victoria Falls</button><button onclick="regionalSearch('Kalahari')">Western sandveld</button></div>
+<p class="small">Habitat guides are approximate; many species occur in more than one region.</p></section>
+
+
+<section class="hero">
+<h2>Matabeleland ID Key</h2>
+<p class="small">Answer what you can. You do not need to know every character. The key narrows the 89-tree field list and then shows the closest matches.</p>
+<div id="idkey">
+<div class="question" id="idq">1. What type of leaf does the tree have?</div>
+<div class="answers" id="ida">
+<button onclick="idAnswer('simple')">Simple leaf</button>
+<button onclick="idAnswer('compound')">Compound leaf</button>
+<button onclick="idAnswer('palmate')">Hand-shaped / palmate</button>
+<button onclick="idAnswer('unknown')">Not sure</button>
+</div>
+<div class="small" id="idcount">Start with the leaf</div>
+</div>
+</section>
+<section class="hero">
+<h2>Visual identification</h2
+<p class="small">Use the photographs as a comparison set. Look for the same feature on your tree rather than matching the whole-tree silhouette.</p>
+<div class="grid">
+<div class="fact"><b>Leaf</b> Check simple/compound, opposite/alternate, leaflet number, size, texture, hairs and underside colour.</div>
+<div class="fact"><b>Bark</b> Check colour, fissures, flakes, papery bark, thorns and any resin or latex.</div>
+<div class="fact"><b>Fruit</b> Check pod, berry, capsule, winged fruit and whether fruit hangs from the twig, trunk or branch.</div>
+<div class="fact"><b>Habitat</b> Check granite, sand, clay, river margin, mopane woodland, miombo or teak woodland.</div>
+</div>
+</section>
+
+<section class="hero">
+<h2>Matobo specials</h2>
+<p class="small">A quick shortlist for rocky granite country. These are not necessarily exclusive to Matobo.</p>
+<div class="tabs">
+<button onclick="quickSpecies('Brachystegia glaucescens')">Matobo Brachystegia</button>
+<button onclick="quickSpecies('Ficus glumosa')">Rock fig</button>
+<button onclick="quickSpecies('Ehretia rigida subsp. rigida')">Puzzle-bush</button>
+<button onclick="quickSpecies('Dovyalis zeyheri')">Dovyalis</button>
+</div>
+</section>
+<section class="hero">
+<h2>Matabeleland first</h2>
+<p class="small"><b>Field edition 1.0</b> — 89 species/entries, with regional filters and source-linked Zimbabwe photographs.</p>
+<p class="small">The photographic priority is Matabeleland: Matobo, Hwange, Victoria Falls, the western sandveld and surrounding dry woodland. Several Flora of Zimbabwe records are specifically from Hwange, Matobo and other Zimbabwe localities. </p>
+</section>
+<section class="hero">
+<h2>Field checklist</h2>
+<div class="small">When identifying an unknown tree, record these before choosing a name:</div>
+<div class="grid" style="margin-top:8px">
+<div class="fact"><b>1. Leaves</b>Simple or compound? Opposite or alternate? Shape, size, smell, hairs, glands.</div>
+<div class="fact"><b>2. Stem</b>Thorns, prickles, spines, glands, exudate and bark texture.</div>
+<div class="fact"><b>3. Fruit</b>Shape, wings, pods, berries, capsules and where attached.</div>
+<div class="fact"><b>4. Place</b>Soil, altitude, rainfall, woodland type, rocks and proximity to water.</div>
+</div>
+</section>
+<section class="hero">
+<h2>Photographs</h2>
+<p class="small">For identification, compare the <b>leaf and twig first</b>, then bark and fruit. A whole-tree photograph alone is rarely enough.</p>
+<p class="small">Photographs are loaded from their original source when internet is available. The guide itself works offline, but remote photographs may not appear without connectivity. The photographic set uses Wikimedia Commons and Flora of Zimbabwe/related Flora databases that are marked as public domain or Creative Commons licensed. Attribution is shown on each tree card. More Zimbabwe-specific photographs will be added in the next pass.</p>
+</section>
+
+<section class="hero">
+<h2>Zimbabwe seasons</h2>
+<div class="grid">
+<div class="fact"><b>Early rains</b> Many deciduous trees leaf out rapidly; watch for fresh flushes and first flowers.</div>
+<div class="fact"><b>Summer</b> Flowering and fruiting are highly species- and rainfall-dependent. Record both leaf and reproductive characters.</div>
+<div class="fact"><b>Late rains</b> Pods, capsules and winged fruits can become the easiest identification characters.</div>
+<div class="fact"><b>Dry season</b> Bark, thorns, branching pattern and persistent fruit become especially important.</div>
+</div>
+<p class="small">Seasonal timing varies with rainfall, altitude and locality. Species-level flowering months will be added only where supported by the botanical record.</p>
+</section>
+<section class="hero">
+<h2>Photographic sources</h2>
+<p class="small">Where photographs are available through Flora of Zimbabwe, the app opens the original species record so you can see the individual photograph, photographer and locality. The database identifies 289 images associated with Meg Coates Palgrave. </p>
+</section>
+<footer>
+<b>About this guide</b><br>
+This is an original field key built around observable characters—leaf arrangement and form, thorns, bark, fruit and habitat. It is designed to complement, not reproduce, Meg Coates Palgrave's copyrighted keys or text. Her <i>Key to the Trees of Zimbabwe</i> was published in 1996 and covered six Zimbabwe areas; her work remains an important foundation for Zimbabwe tree identification.<br><br>
+Useful references: <a href="https://www.zimbabweflora.co.zw/" target="_blank">Flora of Zimbabwe</a> ·
+<a href="https://www.treesofsouthernafrica.com/" target="_blank">Key to Trees of Southern Africa</a>
+</footer>
+
+
+
+<section class="hero" id="photogallery">
+<h2>Photo gallery</h2>
+<p class="muted">Trees with a source-linked photograph are shown here. Tap a photograph to open the full species record.</p>
+<div id="photoGrid" class="photo-grid"></div>
+</section>
+<section class="hero" id="visualkey">
+<h2>Visual field key</h2>
+<p class="muted">Start with the feature you can actually see. Open a group to compare the main Zimbabwe tree types before using the full ID Key.</p>
+<div class="look-at" id="lookAtButtons">
+<button data-mode="leaf">🍃 Leaves</button>
+<button data-mode="bark">🌳 Bark</button>
+<button data-mode="thorn">🌵 Thorns</button>
+<button data-mode="flower">🌼 Flowers</button>
+<button data-mode="fruit">🫘 Fruit / pods</button>
+<button data-mode="tree">🌲 Whole tree</button>
+</div>
+<div id="visualResults" class="grid"></div>
+</section>
+<section class="hero" id="compare">
+<h2>Compare likely trees</h2>
+<p class="muted">The key now ranks several candidates instead of forcing a single identification. Compare the leading trees before deciding what you have.</p>
+<div id="compareGrid" class="grid"></div>
+</section>
+</main>
+<script>
+const trees=[{"c": "Msasa", "s": "Brachystegia spiciformis", "leaf": "Compound, once-pinnate; leaflets opposite", "thorn": "No", "bark": "Dark grey, often mottled", "fruit": "Flat woody pod", "hab": "Miombo woodland; widespread central and eastern Zimbabwe", "note": "Flushes coppery/red in the new season."}, {"c": "Mopane", "s": "Colophospermum mopane", "leaf": "Distinctive butterfly-shaped, paired leaflets", "thorn": "No", "bark": "Dark grey-brown, fissured", "fruit": "Winged, single-seeded pod", "hab": "Hot, dry lowveld and Zambezi Valley", "note": "Leaves often fold together; a major browse tree."}, {"c": "Mukarati / Musasa", "s": "Brachystegia tamarindoides", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Flat pod", "hab": "Higher rainfall and rocky woodland", "note": "Several Brachystegia species can be difficult without habitat clues."}, {"c": "Munondo", "s": "Julbernardia globiflora", "leaf": "Compound, once-pinnate; paired leaflets", "thorn": "No", "bark": "Grey to dark brown", "fruit": "Woody pod", "hab": "Miombo woodland, especially north and central Zimbabwe", "note": "Often associated with Msasa woodland."}, {"c": "Baobab", "s": "Adansonia digitata", "leaf": "Palmately compound, 5–7 leaflets", "thorn": "No", "bark": "Huge smooth grey trunk", "fruit": "Large woody oval fruit", "hab": "Hot dry country; Matabeleland, Zambezi Valley and Lowveld", "note": "Massive trunk and hand-shaped leaves are distinctive."}, {"c": "Marula", "s": "Sclerocarya birrea", "leaf": "Compound, once-pinnate; leaflets crowded near tip", "thorn": "No", "bark": "Grey, mottled, exfoliating", "fruit": "Large yellow-green fleshy fruit", "hab": "Woodland and open bushveld", "note": "Male and female trees occur separately."}, {"c": "Knob-thorn", "s": "Senegalia nigrescens", "leaf": "Bipinnate, small leaflets", "thorn": "Paired, large black hooked/knob-like thorns on older branches", "bark": "Dark, rough", "fruit": "Flat pod", "hab": "Hot lowveld and Zambezi Valley", "note": "The paired black thorns are a strong field clue."}, {"c": "Sweet thorn", "s": "Vachellia karroo", "leaf": "Bipinnate", "thorn": "Paired, straight, white thorns", "bark": "Dark grey to black, rough", "fruit": "Curved to straight pod", "hab": "Open woodland, river margins and disturbed ground", "note": "A common thorn tree with conspicuous white thorns."}, {"c": "Umbrella thorn", "s": "Vachellia tortilis", "leaf": "Bipinnate", "thorn": "Paired thorns, some hooked and some straight", "bark": "Dark grey, rough", "fruit": "Coiled/spiral pod", "hab": "Very dry lowveld and Zambezi Valley", "note": "Broad umbrella crown in open country."}, {"c": "Fever tree", "s": "Vachellia xanthophloea", "leaf": "Bipinnate", "thorn": "Paired small thorns", "bark": "Yellow-green to yellow, powdery", "fruit": "Flat pod", "hab": "Wet ground, pans and river margins", "note": "Yellow bark is highly distinctive."}, {"c": "Camel thorn", "s": "Vachellia erioloba", "leaf": "Bipinnate", "thorn": "Paired thorns", "bark": "Dark rough bark", "fruit": "Large thick curved pod", "hab": "Very dry sandy country", "note": "Mainly far western/southwestern dry areas."}, {"c": "Hissing thorn", "s": "Senegalia ataxacantha", "leaf": "Bipinnate", "thorn": "Long hooked thorns, often crowded", "bark": "Grey-brown", "fruit": "Flat pod", "hab": "Thickets and woodland, often near water", "note": "Can form dense thorny thickets."}, {"c": "Paperbark acacia", "s": "Vachellia sieberiana", "leaf": "Bipinnate", "thorn": "Paired short thorns, sometimes absent", "bark": "Pale grey, papery/flaking", "fruit": "Flat pod", "hab": "Woodland and open grassy country", "note": "Pale flaky bark is useful."}, {"c": "Red bushwillow", "s": "Combretum apiculatum", "leaf": "Simple, opposite; usually elliptic", "thorn": "No", "bark": "Grey-brown, rough or flaky", "fruit": "4-winged nut", "hab": "Dry woodland and rocky country", "note": "Look for four-winged fruits."}, {"c": "Leadwood", "s": "Combretum imberbe", "leaf": "Simple, opposite, small and leathery", "thorn": "No", "bark": "Very dark, deeply fissured", "fruit": "4-winged nut", "hab": "Hot dry woodland and riverine areas", "note": "Extremely hard, heavy wood."}, {"c": "Large-fruited bushwillow", "s": "Combretum zeyheri", "leaf": "Simple, opposite, large", "thorn": "No", "bark": "Grey-brown", "fruit": "Large 4-winged fruit", "hab": "Woodland and rocky slopes", "note": "Large leaves and large winged fruits."}, {"c": "Raisin bush", "s": "Grewia flava", "leaf": "Simple, alternate, 3-veined from base", "thorn": "No", "bark": "Grey-brown", "fruit": "Paired or clustered small berry-like fruits", "hab": "Dry woodland and sandy country", "note": "Small rounded leaves; fruit can be raisin-like."}, {"c": "Lavender starflower", "s": "Grewia monticola", "leaf": "Simple, alternate", "thorn": "No", "bark": "Grey", "fruit": "Small paired lobed fruits", "hab": "Woodland and bushveld", "note": "Grewia fruits are useful for identification."}, {"c": "Bird plum", "s": "Berchemia discolor", "leaf": "Simple, alternate, glossy", "thorn": "No", "bark": "Grey-brown", "fruit": "Oval dark purple-black drupe", "hab": "Woodland, often on heavier soils", "note": "Fruit resembles a small plum."}, {"c": "Buffalo thorn", "s": "Ziziphus mucronata", "leaf": "Simple, alternate, 3-veined", "thorn": "Paired thorns, one straight and one hooked", "bark": "Grey-brown", "fruit": "Round reddish-brown drupe", "hab": "Broadly distributed woodland and bushveld", "note": "The two unequal thorns are diagnostic."}, {"c": "Monkey orange", "s": "Strychnos spinosa", "leaf": "Simple, opposite, glossy", "thorn": "Often short spines on branches", "bark": "Grey-brown", "fruit": "Large round orange-yellow fruit", "hab": "Woodland, bushveld and Lowveld", "note": "Large hard fruit is distinctive."}, {"c": "Spiny monkey orange", "s": "Strychnos pungens", "leaf": "Simple, opposite, very stiff with sharp tip", "thorn": "Branches can be spine-tipped", "bark": "Grey-brown", "fruit": "Round fruit", "hab": "Dry woodland and rocky country", "note": "Very sharp leaf tips."}, {"c": "Wild medlar", "s": "Vangueria infausta", "leaf": "Simple, opposite, large and rough", "thorn": "No", "bark": "Grey-brown", "fruit": "Round edible brown fruit", "hab": "Woodland and bushveld", "note": "Leaves often clustered toward branch tips."}, {"c": "Natal mahogany", "s": "Trichilia emetica", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Red/orange capsule", "hab": "Riverine and higher rainfall woodland", "note": "Evergreen or semi-evergreen; often broad crowned."}, {"c": "Mubvamaropa", "s": "Trichilia dregeana", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Capsule with arillate seeds", "hab": "Moist woodland and forest margins", "note": "Mostly eastern and wetter regions."}, {"c": "Cape ash", "s": "Ekebergia capensis", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Round fleshy fruit", "hab": "Riverine woodland and moist areas", "note": "Often associated with streams."}, {"c": "Wild loquat", "s": "Uapaca kirkiana", "leaf": "Simple, clustered at branch ends", "thorn": "No", "bark": "Dark grey, often rough", "fruit": "Round fleshy fruit on long stalks", "hab": "Miombo woodland", "note": "Distinctive broad crown and clustered leaves."}, {"c": "Mopane apple / mahobohobo", "s": "Uapaca nitida", "leaf": "Simple, clustered near branch tips", "thorn": "No", "bark": "Grey-brown", "fruit": "Round fleshy fruit", "hab": "Miombo and dry woodland", "note": "Related to Uapaca kirkiana."}, {"c": "Common wild fig", "s": "Ficus sur", "leaf": "Simple, alternate, often lobed", "thorn": "No", "bark": "Grey, smooth to rough", "fruit": "Figs borne on trunk/large branches", "hab": "Riverine woodland and moist areas", "note": "Look for figs attached to older wood."}, {"c": "Sycamore fig", "s": "Ficus sycomorus", "leaf": "Simple, alternate, lobed", "thorn": "No", "bark": "Pale grey, peeling", "fruit": "Figs on trunk and branches", "hab": "Rivers and floodplains", "note": "Often a large riverine tree."}, {"c": "Wild rubber fig", "s": "Ficus thonningii", "leaf": "Simple, alternate, entire to slightly lobed", "thorn": "No", "bark": "Grey", "fruit": "Paired figs", "hab": "Woodland and rocky areas", "note": "Often forms a spreading crown."}, {"c": "Mountain fig", "s": "Ficus glumosa", "leaf": "Simple, alternate, often slightly lobed", "thorn": "No", "bark": "Grey, sometimes pale", "fruit": "Figs", "hab": "Rocky hills, cliffs and woodland", "note": "Common on rocky outcrops."}, {"c": "Mopane-associated commiphora", "s": "Commiphora mollis", "leaf": "Compound, usually trifoliolate", "thorn": "No", "bark": "Papery, peeling", "fruit": "Small drupe", "hab": "Hot dry woodland", "note": "Commiphora bark is often a key clue."}, {"c": "Corkwood", "s": "Commiphora africana", "leaf": "Compound, often trifoliolate", "thorn": "No", "bark": "Pale, papery, peeling", "fruit": "Small drupe", "hab": "Dry woodland and bushveld", "note": "Strong aromatic resin when damaged."}, {"c": "Marula bush / corkwood", "s": "Commiphora edulis", "leaf": "Compound, often trifoliolate", "thorn": "No", "bark": "Peeling grey-green", "fruit": "Small drupe", "hab": "Dry woodland", "note": "Resinous bark and compound leaves."}, {"c": "Musasa-leaved tree", "s": "Brachystegia boehmii", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Flat woody pod", "hab": "Miombo, especially northern Zimbabwe", "note": "Compare carefully with other Brachystegia."}, {"c": "Brachystegia utilis", "s": "Brachystegia utilis", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Flat pod", "hab": "Miombo woodland", "note": "Identification often depends on leaflet and habitat details."}, {"c": "Burkea", "s": "Burkea africana", "leaf": "Bipinnate, delicate leaflets", "thorn": "No", "bark": "Dark grey to black, rough", "fruit": "Flat woody pod", "hab": "Miombo and sandy woodland", "note": "Fine bipinnate foliage and dark bark."}, {"c": "Albizia", "s": "Albizia antunesiana", "leaf": "Bipinnate, many small leaflets", "thorn": "No", "bark": "Grey-brown", "fruit": "Flat pod", "hab": "Miombo woodland", "note": "Large spreading crown."}, {"c": "Paperbark albizia", "s": "Albizia versicolor", "leaf": "Bipinnate", "thorn": "No", "bark": "Pale, papery", "fruit": "Flat pod", "hab": "Woodland", "note": "Bark and large compound leaves useful together."}, {"c": "Mukwa", "s": "Pterocarpus angolensis", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Dark grey-brown, rough", "fruit": "Distinctive circular winged pod", "hab": "Miombo woodland", "note": "The winged fruit is a strong clue."}, {"c": "Muninga", "s": "Pterocarpus rotundifolius", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Winged pod", "hab": "Woodland and dry forest", "note": "Closely related to P. angolensis."}, {"c": "Pod mahogany", "s": "Afzelia quanzensis", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Large thick woody pod with black seeds", "hab": "Lowveld and dry woodland", "note": "Black seeds and red arils are conspicuous."}, {"c": "African teak", "s": "Baikiaea plurijuga", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Large woody pod", "hab": "Kalahari sandveld; western Zimbabwe", "note": "Important tree of teak woodland."}, {"c": "Mubonde", "s": "Erythrophleum africanum", "leaf": "Bipinnate", "thorn": "No", "bark": "Dark grey, rough", "fruit": "Flat woody pod", "hab": "Miombo and dry woodland", "note": "Leaves can be relatively large and robust."}, {"c": "African ebony", "s": "Diospyros mespiliformis", "leaf": "Simple, alternate, glossy", "thorn": "Usually no", "bark": "Dark grey to black", "fruit": "Yellow-brown edible berry", "hab": "Riverine and woodland", "note": "Dark trunk and glossy leaves."}, {"c": "Silver cluster-leaf", "s": "Terminalia sericea", "leaf": "Simple, clustered near branch ends", "thorn": "No", "bark": "Grey-brown, fibrous", "fruit": "3-winged nut", "hab": "Sandy woodland and Kalahari sands", "note": "Silvery leaves, especially beneath."}, {"c": "Large-leaved terminalia", "s": "Terminalia mollis", "leaf": "Simple, clustered at branch tips", "thorn": "No", "bark": "Grey-brown", "fruit": "3-winged nut", "hab": "Woodland", "note": "Large soft leaves."}, {"c": "Terminalia brachystemma", "s": "Terminalia brachystemma", "leaf": "Simple, clustered toward branch ends", "thorn": "No", "bark": "Grey-brown", "fruit": "Winged nut", "hab": "Dry woodland", "note": "Compare leaf size and habitat with other Terminalia."}, {"c": "Combretum hereroense", "s": "Combretum hereroense", "leaf": "Simple, opposite", "thorn": "No", "bark": "Grey-brown", "fruit": "4-winged nut", "hab": "Dry woodland and bushveld", "note": "Winged fruits and opposite leaves."}, {"c": "Wild teak", "s": "Baikiaea plurijuga", "leaf": "Compound, once-pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Woody pod", "hab": "Western Zimbabwe sandveld", "note": "Also called Rhodesian teak."}, {"c": "False mopane", "s": "Guibourtia coleosperma", "leaf": "Compound, two leaflets", "thorn": "No", "bark": "Dark grey-brown", "fruit": "Pod with conspicuous seeds", "hab": "Kalahari sandveld, west", "note": "Two-leaflet leaves are distinctive."}, {"c": "African mangosteen", "s": "Garcinia livingstonei", "leaf": "Simple, opposite, glossy", "thorn": "No", "bark": "Grey-brown", "fruit": "Yellow-orange berry", "hab": "Hot woodland and riverine areas", "note": "Often evergreen and dense crowned."}, {"c": "Wild custard apple", "s": "Annona senegalensis", "leaf": "Simple, alternate, broadly elliptic", "thorn": "No", "bark": "Grey-brown", "fruit": "Green-yellow fleshy aggregate fruit", "hab": "Woodland and thickets", "note": "Leaves often softly hairy beneath."}, {"c": "African star apple", "s": "Englerophytum magalismontanum", "leaf": "Simple, alternate, leathery", "thorn": "No", "bark": "Grey-brown", "fruit": "Fleshy berry", "hab": "Woodland, often rocky", "note": "Often a small tree."}, {"c": "Hissing thorn", "s": "Senegalia goetzei", "leaf": "Bipinnate", "thorn": "Hooked thorns", "bark": "Grey-brown", "fruit": "Flat pod", "hab": "Dry woodland", "note": "Species separation within thorn trees can require close inspection."}, {"c": "Flame tree", "s": "Erythrina abyssinica", "leaf": "Trifoliolate, broad leaflets", "thorn": "Small prickles on trunk/branches", "bark": "Corky, rough", "fruit": "Pod with bright red seeds", "hab": "Woodland, especially rocky areas", "note": "Red flowers and red seeds when present."}, {"c": "Coral tree", "s": "Erythrina livingstoniana", "leaf": "Trifoliolate", "thorn": "Prickles", "bark": "Corky", "fruit": "Pod with red seeds", "hab": "Woodland and riverine areas", "note": "Often leafless around flowering."}, {"c": "Jujube", "s": "Ziziphus abyssinica", "leaf": "Simple, alternate, 3-veined", "thorn": "Paired thorns", "bark": "Grey-brown", "fruit": "Round drupe", "hab": "Dry woodland", "note": "Compare carefully with Z. mucronata."}, {"c": "Ximenia / wild plum", "s": "Ximenia caffra", "leaf": "Simple, alternate, leathery", "thorn": "Often spiny branch tips", "bark": "Grey-brown", "fruit": "Oval red/orange fruit", "hab": "Dry woodland and bushveld", "note": "Leaves have a characteristic leathery feel."}, {"c": "Red bushwillow", "s": "Combretum molle", "leaf": "Simple, opposite, softly hairy", "thorn": "No", "bark": "Grey-brown, rough", "fruit": "4-winged nut", "hab": "Woodland and bushveld", "note": "Soft hairy leaves help separate it from some Combretum."}, {"c": "Spreading bushwillow", "s": "Combretum collinum", "leaf": "Simple, opposite", "thorn": "No", "bark": "Grey-brown", "fruit": "4-winged nut", "hab": "Dry woodland", "note": "Variable species; habitat useful."}, {"c": "Sausage tree", "s": "Kigelia africana", "leaf": "Compound, pinnate", "thorn": "No", "bark": "Grey-brown", "fruit": "Very large sausage-shaped fruit", "hab": "Riverine and moist woodland", "note": "Huge hanging fruits make it unmistakable."}, {"c": "Gardenia", "s": "Gardenia ternifolia", "leaf": "Simple, in whorls of 3", "thorn": "No", "bark": "Smooth grey/pale", "fruit": "Large ovoid fruit", "hab": "Woodland, rocky slopes and stream margins", "note": "Whorls of three leaves and scented flowers."}, {"c": "September bells", "s": "Rothmannia globosa", "leaf": "Simple, opposite", "thorn": "No", "bark": "Grey-brown", "fruit": "Berry-like fruit", "hab": "Moist woodland and forest margins", "note": "Large bell-shaped flowers when present."}, {"c": "Wild olive", "s": "Olea europaea subsp. africana", "leaf": "Simple, opposite, narrow; silvery beneath", "thorn": "No", "bark": "Grey-brown", "fruit": "Small dark drupe", "hab": "Rocky hills and woodland", "note": "Silvery leaf underside is a useful clue."}, {"c": "Cape chestnut", "s": "Calodendrum capense", "leaf": "Simple, opposite, glossy", "thorn": "No", "bark": "Grey-brown", "fruit": "Large woody capsule", "hab": "Eastern highlands and moist areas", "note": "Mostly eastern Zimbabwe."}, {"c": "Mubayamhondoro", "s": "Cussonia arborea", "leaf": "Palmately compound, large leaflets", "thorn": "No", "bark": "Grey-brown", "fruit": "Small fleshy fruit clusters", "hab": "Eastern highlands and montane woodland", "note": "Large umbrella-like crown and hand-shaped leaves."}, {"c": "Cabbage tree", "s": "Cussonia paniculata", "leaf": "Palmately compound", "thorn": "No", "bark": "Grey-brown", "fruit": "Small fruits in clusters", "hab": "Highveld and rocky areas", "note": "Mostly higher elevations."}, {"c": "Muzhanje", "s": "Dovyalis zeyheri", "leaf": "Simple, alternate", "thorn": "Sometimes spiny", "bark": "Grey-brown", "fruit": "Small orange-red fruit", "hab": "Woodland and bushveld", "note": "Usually a shrub or small tree."}, {"c": "Matobo brachystegia", "s": "Brachystegia glaucescens", "leaf": "Compound, once-pinnate; several pairs of leaflets", "thorn": "No", "bark": "Grey-brown, often rough or peeling", "fruit": "Flat woody pod", "hab": "Rocky woodland and kopjes, especially Matobo", "note": "Characteristic tree of rocky Matobo woodland."}, {"c": "Matobo puzzle-bush", "s": "Ehretia rigida subsp. rigida", "leaf": "Simple, alternate, oval; often clustered", "thorn": "Often spiny", "bark": "Grey-brown", "fruit": "Small orange-red to reddish fruit", "hab": "Rocky woodland and dry bushveld", "note": "Recorded at Shumbashaba in Matobo; Ndebele Umthlele."}, {"c": "Matobo thorn", "s": "Gymnosporia matobensis", "leaf": "Simple, small, oblanceolate; clustered", "thorn": "Straight needle-like spines", "bark": "Grey-brown", "fruit": "Small capsule", "hab": "Rocky Matobo Hills", "note": "Zimbabwe endemic restricted to the larger Matobo area."}, {"c": "Blue-leaved ochna", "s": "Ochna glauca", "leaf": "Simple, small, blue-green", "thorn": "No", "bark": "Grey-brown", "fruit": "Red fruits", "hab": "Granite boulders and rocky Matobo woodland", "note": "Blue-green leaves and red fruits are distinctive."}, {"c": "Matabeleland spindle tree", "s": "Elaeodendron matabelicum", "leaf": "Simple, opposite, leathery", "thorn": "No", "bark": "Grey-brown", "fruit": "Fleshy orange/red fruit", "hab": "Open rocky woodland around Matobo", "note": "Characteristic Matobo rocky-woodland species."}, {"c": "Burkei fig", "s": "Ficus burkei", "leaf": "Simple, alternate", "thorn": "No", "bark": "Grey-brown", "fruit": "Figs", "hab": "Rocky woodland and forest patches", "note": "Recorded from Matobo; compare with other rock figs."}, {"c": "Granitic fig", "s": "Ficus natalensis subsp. graniticola", "leaf": "Simple, alternate", "thorn": "No", "bark": "Grey-brown", "fruit": "Figs", "hab": "Rocky woodland, especially granitic areas", "note": "Granite-associated fig recorded in Matobo."}, {"c": "Willow-leaved fig", "s": "Ficus salicifolia", "leaf": "Simple, narrow, willow-like", "thorn": "No", "bark": "Grey", "fruit": "Figs", "hab": "Rocky areas and woodland", "note": "Historical Matobo record gives Ndebele Iduluguse."}, {"c": "White wild pear", "s": "Dombeya rotundifolia", "leaf": "Simple, alternate, rounded to heart-shaped", "thorn": "No", "bark": "Grey-brown", "fruit": "Dry capsule", "hab": "Rocky woodland and hills", "note": "Showy white flowers; recorded at Camp Dwala."}, {"c": "Strychnos matopensis", "s": "Strychnos matopensis", "leaf": "Simple, opposite", "thorn": "No", "bark": "Grey-brown", "fruit": "Berry-like fruit", "hab": "Rocky Matobo woodland", "note": "Named for the Matobo Hills; recorded as a Matobo special."}, {"c": "Matobo commiphora", "s": "Commiphora marlothii", "leaf": "Compound, often trifoliolate", "thorn": "No", "bark": "Papery/peeling", "fruit": "Small drupe", "hab": "Rocky kopjes and dry woodland", "note": "Conspicuous rock-loving tree around Maleme Dam."}, {"c": "Turraea of Matobo", "s": "Turraea obtusifolia", "leaf": "Simple, alternate, oval", "thorn": "No", "bark": "Grey-brown", "fruit": "Capsule", "hab": "Rocky and woodland habitats around Matobo", "note": "Recorded among the characteristic Maleme Dam plants."}, {"c": "Rock fig", "s": "Ficus glumosa Delile", "leaf": "Simple, alternate, often slightly lobed", "thorn": "No", "bark": "Pale grey, smooth/flaking", "fruit": "Figs", "hab": "Rock faces and granite woodland, especially Matobo", "note": "Often grows as a rock-splitter."}, {"c": "Broad-pod elephant-root", "s": "Elephantorrhiza burkei", "leaf": "Bipinnate; many narrow leaflets", "thorn": "No", "bark": "Dark grey to reddish", "fruit": "Broad woody pod", "hab": "Matobo Hills, Shumbashaba and dry woodland", "note": "Small tree/shrub; very fine foliage. Ndebele: Ililamba / Intolwane."}, {"c": "Large-leaved guarri", "s": "Euclea natalensis subsp. acutifolia", "leaf": "Simple, elliptic; densely hairy below", "thorn": "No", "bark": "Grey, rough, fissured, flaking", "fruit": "Small fleshy fruit", "hab": "Matobo rocky woodland", "note": "Leaves can be recognised by the hairy underside."}, {"c": "Live-long / tree grape", "s": "Lannea discolor", "leaf": "Compound; up to 11 pairs plus terminal leaflet", "thorn": "No", "bark": "Coppery, rough", "fruit": "Small grape-like fruits", "hab": "Woodland and rocky country", "note": "Leaf undersides distinctly grey/felty; flowers can appear when leafless."}, {"c": "Securidaca", "s": "Securidaca longepedunculata", "leaf": "Simple, alternate", "thorn": "No", "bark": "Grey-brown", "fruit": "Winged fruit", "hab": "Woodland and rocky areas", "note": "Distinctive winged fruits; recorded in Matobo plant literature."}, {"c": "Pepper-leaved commiphora", "s": "Commiphora mossambicensis", "leaf": "Simple/compound variable; small leaflets", "thorn": "No", "bark": "Papery/peeling", "fruit": "Small drupe", "hab": "Dry woodland; Matobo and Hwange records", "note": "Flora records include Camp Amalinda, Matobo and Dimbangombe near Hwange."}, {"c": "Red spike-thorn", "s": "Gymnosporia senegalensis", "leaf": "Simple, alternate, small", "thorn": "Spiny", "bark": "Grey-brown", "fruit": "Small capsule", "hab": "Dry woodland and bushveld", "note": "Ndebele: Isihlangu; several Shona names recorded."}];
+
+const photos={"Msasa": ["https://www.mozambiqueflora.com/speciesdata/images/12/126660-32.jpg", "Flora of Mozambique/Zimbabwe — Mark Hyde, Bart Wursten, Petra Ballings & Meg Coates Palgrave", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126660"], "Munondo": ["https://www.zimbabweflora.co.zw/speciesdata/images/12/126770-14.jpg", "Flora of Zimbabwe — MG Bingham", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126770"], "Buffalo thorn": ["https://www.zimbabweflora.co.zw/speciesdata/images/16/164400-22.jpg", "Flora of Zimbabwe — regional species image", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=164400"], "Mukwa": ["https://www.zimbabweflora.co.zw/speciesdata/images/13/131120-20.jpg", "Flora of Zimbabwe — BT Wursten", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=131120"], "Afzelia quanzensis": ["https://www.mozambiqueflora.com/speciesdata/images/12/126760-1.jpg", "Flora of Mozambique/Zimbabwe — Zimbabwe record", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126760"], "Burkea africana": ["https://www.zimbabweflora.co.zw/speciesdata/images/12/126550-15.jpg", "Flora of Zimbabwe — species image", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126550"], "Ziziphus mucronata": ["https://upload.wikimedia.org/wikipedia/commons/9/9e/Ziziphus_mucronata00.jpg", "Wikimedia Commons — CC BY-SA image", "https://commons.wikimedia.org/wiki/File:Ziziphus_mucronata00.jpg"], "Terminalia sericea": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Terminalia_sericea_20D_4110.jpg?width=900", "Wikimedia Commons — licensed image", "https://commons.wikimedia.org/wiki/File:Terminalia_sericea_20D_4110.jpg"], "Brachystegia spiciformis": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Brachystegia_spiciformis01.jpg?width=900", "Wikimedia Commons — Bart Wursten, CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Brachystegia_spiciformis01.jpg"], "Colophospermum mopane": ["https://commons.wikimedia.org/wiki/Special:Redirect/file/Colophospermum_mopane01.jpg?width=900", "Wikimedia Commons — CC BY-SA 3.0", "https://commons.wikimedia.org/wiki/File:Colophospermum_mopane01.jpg"], "Matobo puzzle-bush": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=148300", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=148300"], "Matobo brachystegia": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126620", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=126620"], "West Nicholson ebony": ["https://www.zimbabweflora.co.zw/speciesdata/species-display.php?species_id=144030", "Meg Coates Palgrave / Flora of Zimbabwe", "https://www.zimbabweflora.co.zw/speciesdata/species-display.php?species_id=144030"], "Dovyalis zeyheri": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=136210", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=136210"], "White wild pear": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=139880", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=139880"], "Rock fig": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=120300", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=120300"], "African ebony": ["https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=144030", "Flora of Zimbabwe — species photographs and records", "https://www.zimbabweflora.co.zw/speciesdata/species.php?species_id=144030"]};
+
+const names={"Msasa": ["Igonde (Ndebele)", "Musasa (Shona)", "Common miombo tree; copper/red flush is a strong clue."], "Mopane": ["UmNangathi / Mopane (Ndebele)", "Mupani (Shona)", "Butterfly-shaped paired leaflets; common in hot dry country."], "Baobab": ["Umkhomo (Ndebele)", "Mubuyu (Shona)", "Huge smooth trunk; fruit hangs on long stalks."], "Marula": ["Umganu (Ndebele)", "Mupfura (Shona)", "Large yellow-green fruit; separate male and female trees."], "Munondo": ["—", "Munondo (Shona)", "Important miombo woodland tree."], "Mukwa": ["Umvagazi (Ndebele)", "Mukwa (Shona)", "Valuable timber tree; circular winged pod."], "Buffalo thorn": ["Umnawathi (Ndebele)", "Musawu (Shona)", "One straight and one hooked thorn."], "Silver cluster-leaf": ["—", "Mususu (Shona)", "Silvery underside and clustered leaves."], "African ebony": ["Umdlawuzo (Ndebele)", "Mushenje / Mushuma (Shona)", "Edible fruit; dark heartwood in some trees."], "Sweet thorn": ["Umunga (Ndebele)", "Mutsamvi (Shona)", "White paired thorns and yellow flower heads."], "Pod mahogany": ["Ihlene / Umkamba (Ndebele)", "Mugogoma / Mukamba (Shona)", "Large black seeds in a thick woody pod."], "Burkea": ["Umnondo (Ndebele)", "Mukarati (Shona)", "Fine bipinnate foliage and deeply fissured bark."], "Albizia": ["Umnonjwana (Ndebele)", "Mubungati (Shona)", "Large spreading crown."], "Puzzle-bush": ["Umthlele (Ndebele)", "Chivhunabadza (Shona)", "Recorded from Matobo Hills; thorny small tree."], "Matobo puzzle-bush": ["Umthlele", "Chivhunabadza", "Flora of Zimbabwe species page."], "Willow-leaved fig": ["Iduluguse", "—", "Historical Matobo record."], "Matobo brachystegia": ["Umbuze", "Gizhe / Guzhe / Muunze", "Flora of Zimbabwe records the Ndebele name Umbuze and several Shona names."], "Rock fig": ["Inkiwane", "Mutove", "Flora of Zimbabwe species page."], "White wild pear": ["Umwane", "Mupunduru / Mukondotowa", "Flora of Zimbabwe species page."]};
+
+const seasons={"Msasa": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Mopane": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Mukarati / Musasa": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Munondo": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Baobab": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Marula": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Knob-thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Sweet thorn": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Umbrella thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Fever tree": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Camel thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Hissing thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Paperbark acacia": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Red bushwillow": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Leadwood": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Large-fruited bushwillow": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Raisin bush": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Lavender starflower": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Bird plum": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Buffalo thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Monkey orange": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Spiny monkey orange": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Wild medlar": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Natal mahogany": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Mubvamaropa": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Cape ash": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Wild loquat": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Mopane apple / mahobohobo": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Common wild fig": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Sycamore fig": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Wild rubber fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Mountain fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Mopane-associated commiphora": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Corkwood": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Marula bush / corkwood": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Musasa-leaved tree": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Brachystegia utilis": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Burkea": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Albizia": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Paperbark albizia": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Mukwa": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Muninga": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Pod mahogany": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "African teak": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Mubonde": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "African ebony": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Silver cluster-leaf": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Large-leaved terminalia": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Terminalia brachystemma": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Combretum hereroense": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Wild teak": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "False mopane": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "African mangosteen": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Wild custard apple": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "African star apple": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Flame tree": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Coral tree": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Jujube": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Ximenia / wild plum": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Spreading bushwillow": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Sausage tree": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Gardenia": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "September bells": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Wild olive": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Cape chestnut": "Often easiest to assess in the wet season when leaves are present; fruit timing varies by locality.", "Mubayamhondoro": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Cabbage tree": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Muzhanje": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall.", "Matobo brachystegia": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Matobo puzzle-bush": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Matobo thorn": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Blue-leaved ochna": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Matabeleland spindle tree": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Burkei fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Granitic fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Willow-leaved fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "White wild pear": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Strychnos matopensis": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Matobo commiphora": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Turraea of Matobo": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Rock fig": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Broad-pod elephant-root": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Large-leaved guarri": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Live-long / tree grape": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Securidaca": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Pepper-leaved commiphora": "Check after the first rains for leaf flush; dry-season bark, branching and persistent fruit remain useful.", "Red spike-thorn": "Broad guide: compare fresh leaf flush after rains, then fruit/pods later in the season; exact timing varies with rainfall."};
+
+const filters={
+ matabeleland:t=>/Matabeleland|Matobo|Hwange|Victoria Falls|Kalahari|western Zimbabwe|Zambezi Valley|dry woodland|sandy woodland|Lowveld|rocky woodland|granite kopjes/i.test(t.hab),
+ dry:t=>/dry|lowveld|Zambezi|sandy|Kalahari|bushveld/i.test(t.hab),
+ miombo:t=>/Miombo/i.test(t.hab),
+ river:t=>/river|wet|moist|floodplain|stream|vlei/i.test(t.hab)
+};
+
+let active="all";
+const list=document.getElementById("list"), search=document.getElementById("search"), count=document.getElementById("count");
+
+function render(){
+ const term=search.value.trim().toLowerCase();
+ let arr=trees.filter(t=>(active==="all"||active==="names"||(filters[active]&&filters[active](t))) &&
+   (!term || (t.c+" "+t.s+" "+t.hab+" "+t.note).toLowerCase().includes(term)));
+ if(active==="names") arr=arr.filter(t=>names[t.c]); count.textContent=arr.length+" trees shown • Matabeleland field edition";
+ list.innerHTML=arr.map((t,i)=>`<article class="card">
+ <h2>${t.c}</h2><div class="latin">${t.s}</div><div class="small">Identification guide — confirm against the photographic record before treating a match as certain.</div>
+${names[t.c] ? `<div class="small"><b>Ndebele:</b> ${names[t.c][0]} &nbsp; <b>Shona:</b> ${names[t.c][1]}</div>` : ''}
+ <div class="photo">
+${photos[t.c] ? `${/\.(jpg|jpeg|png|webp)(\?|$)/i.test(photos[t.c][0]) ? `<a href="${photos[t.c][2]}" target="_blank"><img class="tree-photo" loading="lazy" src="${photos[t.c][0]}" alt="${t.c} — ${t.s}" onerror="this.style.display='none'"></a>` : ''}<div style="padding:10px;text-align:center;font-size:13px">📷 <b>Zimbabwe field photographs</b><br><span class="small">${photos[t.c][1]}</span><br><a href="${photos[t.c][2]}" target="_blank">Open full photographic record</a></div>` : '📷 Photograph to be added'}
+</div>
+ <div class="grid">
+ <div class="fact"><b>Leaves</b>${t.leaf}</div>
+ <div class="fact"><b>Thorns</b>${t.thorn}</div>
+ <div class="fact"><b>Bark</b>${t.bark}</div>
+ <div class="fact"><b>Fruit</b>${t.fruit}</div>
+ </div>
+ <div class="note"><b>Habitat:</b> ${t.hab}<br><b>Field clue:</b> ${t.note}<br><b>Season:</b> ${seasons[t.c]||""}</div>
+<div class="tools">
+${photos[t.c] ? `<button onclick="window.open('${photos[t.c][2]}','_blank')">📷 View Zimbabwe photographs</button>` : ''}
+<button onclick="copyName('${t.s.replace("'","\\'")}')">📋 Copy scientific name</button>
+</div>
+ <span class="badge">Zimbabwe native/recorded</span>
+ </article>`).join("");
+}
+search.addEventListener("input",render);
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active"); active=b.dataset.filter; render();
+}));
+
+const steps=[
+ {q:"What sort of leaves?", a:[
+  ["Simple",t=>/Simple/i.test(t.leaf)],
+  ["Compound",t=>/Compound/i.test(t.leaf)],
+  ["Palmate / hand-shaped",t=>/Palmately/i.test(t.leaf)],
+  ["Two leaflets",t=>/two leaflets/i.test(t.leaf)]
+ ]},
+ {q:"Are there thorns or spines?",a:[
+  ["No",t=>/^No$/i.test(t.thorn)],
+  ["Paired thorns",t=>/Paired/i.test(t.thorn)],
+  ["Hooked / long thorns",t=>/Hooked|Long/i.test(t.thorn)],
+  ["Prickles / spine-tipped",t=>/prickle|spine/i.test(t.thorn)]
+ ]},
+ {q:"What bark feature stands out?",a:[
+  ["Yellow / pale",t=>/Yellow|Pale|yellow-green/i.test(t.bark)],
+  ["Papery / peeling",t=>/papery|peeling|flaking/i.test(t.bark)],
+  ["Dark / rough",t=>/Dark|rough|black/i.test(t.bark)],
+  ["Smooth / grey",t=>/smooth|grey/i.test(t.bark)]
+ ]},
+ {q:"Where is it growing?",a:[
+  ["Dry / hot country",t=>/dry|hot|Lowveld|Zambezi|sandy|Kalahari/i.test(t.hab)],
+  ["Miombo woodland",t=>/Miombo/i.test(t.hab)],
+  ["River / wet ground",t=>/river|wet|moist|floodplain|stream|vlei/i.test(t.hab)],
+  ["Rocky / high country",t=>/rocky|higher|highland|montane/i.test(t.hab)]
+ ]}
+];
+let step=0, candidates=[...trees];
+function showKey(){
+ const q=document.getElementById("q"), a=document.getElementById("answers"), p=document.getElementById("progress");
+ if(step>=steps.length){
+   q.textContent="Key result — see the filtered tree list below.";
+   a.innerHTML=`<button onclick="resetKey()">Start again</button>`;
+   p.textContent="Key complete";
+   renderCandidates();
+   return;
+ }
+ q.textContent=steps[step].q; p.textContent=`Step ${step+1} of ${steps.length}`;
+ a.innerHTML=steps[step].a.map(([label])=>`<button>${label}</button>`).join("");
+ [...a.children].forEach((btn,i)=>btn.onclick=()=>{
+   candidates=candidates.filter(steps[step].a[i][1]);
+   step++;
+   renderCandidates();
+   showKey();
+ });
+}
+function renderCandidates(){
+ list.innerHTML=candidates.map(t=>`<article class="card"><h2>${t.c}</h2><div class="latin">${t.s}</div><div class="small">Identification guide — confirm against the photographic record before treating a match as certain.</div>
+${names[t.c] ? `<div class="small"><b>Ndebele:</b> ${names[t.c][0]} &nbsp; <b>Shona:</b> ${names[t.c][1]}</div>` : ''}<div class="note">${t.note}<br><b>Leaves:</b> ${t.leaf}<br><b>Habitat:</b> ${t.hab}</div></article>`).join("");
+ count.textContent=candidates.length+" possible match"+(candidates.length===1?"":"es")+" from the key";
+}
+function resetKey(){step=0;candidates=[...trees];render();showKey();}
+showKey(); render();
+
+
+let idCandidates=[...trees];
+let idStep=0;
+const idSteps=[
+ {q:"1. What type of leaf does the tree have?",a:[
+  ["Simple leaf",t=>/Simple/i.test(t.leaf)],
+  ["Compound leaf",t=>/Compound/i.test(t.leaf)],
+  ["Hand-shaped / palmate",t=>/Palmately/i.test(t.leaf)],
+  ["Not sure",t=>true]
+ ]},
+ {q:"2. Are there thorns or spines?",a:[
+  ["No thorns",t=>/^No$/i.test(t.thorn)],
+  ["Paired thorns",t=>/Paired/i.test(t.thorn)],
+  ["Hooked / long thorns",t=>/Hooked|Long/i.test(t.thorn)],
+  ["Spines / prickles",t=>/spine|prickle/i.test(t.thorn)]
+ ]},
+ {q:"3. What is the main habitat?",a:[
+  ["Granite / rocky hills",t=>/rock|granite|Matobo/i.test(t.hab)],
+  ["Dry woodland / bushveld",t=>/dry|bushveld|hot|Lowveld|Zambezi/i.test(t.hab)],
+  ["Miombo woodland",t=>/Miombo/i.test(t.hab)],
+  ["River / wet ground",t=>/river|wet|moist|floodplain|stream/i.test(t.hab)]
+ ]},
+ {q:"4. What stands out about the bark?",a:[
+  ["Papery / peeling",t=>/papery|peeling|flaking/i.test(t.bark)],
+  ["Dark / deeply fissured",t=>/dark|deeply fissured|black/i.test(t.bark)],
+  ["Pale / yellowish",t=>/pale|yellow/i.test(t.bark)],
+  ["Grey / ordinary",t=>/grey/i.test(t.bark)]
+ ]},
+ {q:"5. What fruit do you have?",a:[
+  ["Pod",t=>/pod/i.test(t.fruit)],
+  ["Winged fruit",t=>/winged|4-winged|3-winged/i.test(t.fruit)],
+  ["Berry / fleshy fruit",t=>/berry|fleshy|drupe/i.test(t.fruit)],
+  ["No fruit / not sure",t=>true]
+ ]}
+];
+function idAnswer(choice){
+ const f=idSteps[idStep].a[choice];
+ idCandidates=idCandidates.filter(f[1]);
+ idStep++;
+ if(idStep>=idSteps.length || idCandidates.length<=5){showIdResults();return;}
+ document.getElementById("idq").textContent=idSteps[idStep].q;
+ document.getElementById("ida").innerHTML=idSteps[idStep].a.map((x,i)=>`<button onclick="idAnswer(${i})">${x[0]}</button>`).join("");
+ document.getElementById("idcount").textContent=idCandidates.length+" possible matches remain";
+}
+function showIdResults(){
+ document.getElementById("idq").textContent=idCandidates.length ? "Closest matches" : "No close match from the answers";
+ document.getElementById("ida").innerHTML=(idCandidates.length?idCandidates:trees.slice(0,5)).slice(0,8).map(t=>`<button onclick="quickSpecies('${t.s.replace(/'/g,"\\'")}')"><b>${t.c}</b><br><span class="small">${t.s}</span></button>`).join("");
+ document.getElementById("idcount").innerHTML=`${idCandidates.length} possible match${idCandidates.length==1?'':'es'} · <button onclick="resetId()">Start again</button>`;
+}
+function resetId(){
+ idCandidates=[...trees]; idStep=0;
+ document.getElementById("idq").textContent=idSteps[0].q;
+ document.getElementById("ida").innerHTML=idSteps[0].a.map((x,i)=>`<button onclick="idAnswer(${i})">${x[0]}</button>`).join("");
+ document.getElementById("idcount").textContent="Start with the leaf";
+}
+
+function copyName(n){ if(navigator.clipboard) navigator.clipboard.writeText(n); }
+function quickSpecies(term){
+ search.value=term;
+ active="all";
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+ render();
+ window.scrollTo({top:document.getElementById("list").offsetTop-80,behavior:"smooth"});
+}
+function regionalSearch(term){search.value=term;active='matabeleland';render();window.scrollTo({top:document.getElementById('list').offsetTop-80,behavior:'smooth'});}
+function showRandom(){
+ const t=trees[Math.floor(Math.random()*trees.length)];
+ search.value=t.c; active="all";
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.filter==="all"));
+ render();
+ window.scrollTo({top:document.getElementById("list").offsetTop-80,behavior:"smooth"});
+}
+function useLocation(){
+ if(!navigator.geolocation){alert("Location is not available on this iPhone/browser.");return;}
+ navigator.geolocation.getCurrentPosition(pos=>{
+   // The guide does not transmit the location; it simply uses it to offer a rough regional hint.
+   alert("Location available. For this offline version, use the regional buttons above to narrow the guide.");
+ },()=>alert("Location permission was not granted."));
+}
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+/* Field Edition 1.5: ranked identification and candidate comparison */
+(function(){
+  function trees(){ return window.species || window.trees || window.treeData || []; }
+  function blob(t){ try{return JSON.stringify(t||{}).toLowerCase()}catch(e){return ""} }
+  function score(t,a){
+    const b=blob(t); let sc=0, mx=0;
+    const hit=(arr,n)=>{mx+=n;if(arr.some(x=>b.includes(x)))sc+=n};
+    if(a.leaf&&a.leaf!=="unsure"){
+      if(a.leaf==="compound")hit(["compound","leaflets","pinnate","bipinnate","trifoliate"],3);
+      if(a.leaf==="simple")hit(["simple leaf","simple","entire leaf","alternate leaves"],3);
+      if(a.leaf==="palmate")hit(["palmate","lobed","hand-shaped"],3);
+    }
+    if(a.thorn&&a.thorn!=="unsure"){
+      if(a.thorn==="none"){mx+=2;if(!/thorn|spine|prickle/.test(b))sc+=2}
+      if(a.thorn==="paired")hit(["paired thorn","stipular spines","straight paired"],2);
+      if(a.thorn==="hooked")hit(["hooked thorn","hooked spines","hooked"],2);
+      if(a.thorn==="spines")hit(["spines","prickles","thorny"],2);
+    }
+    if(a.habitat&&a.habitat!=="unsure"){
+      if(a.habitat==="rocky")hit(["rocky","kopje","granite","outcrop","hills","rock"],3);
+      if(a.habitat==="dry")hit(["dry woodland","bushveld","dry","semi-arid","sandveld"],3);
+      if(a.habitat==="miombo")hit(["miombo","woodland","msasa"],3);
+      if(a.habitat==="river")hit(["riverine","river","stream","dam","wetland","riparian"],3);
+    }
+    if(a.bark&&a.bark!=="unsure"){
+      if(a.bark==="peeling")hit(["peeling","papery","flaking","exfoliating"],2);
+      if(a.bark==="dark")hit(["dark bark","dark grey","blackish","deeply fissured","fissured"],2);
+      if(a.bark==="pale")hit(["pale bark","yellow bark","yellowish","cream","greyish-cream"],2);
+      if(a.bark==="grey")hit(["grey bark","gray bark","grey"],2);
+    }
+    if(a.fruit&&a.fruit!=="unsure"){
+      if(a.fruit==="pod")hit(["pod","pods"],2);
+      if(a.fruit==="winged")hit(["winged","samara"],2);
+      if(a.fruit==="berry")hit(["berry","berries","fleshy fruit"],2);
+      if(a.fruit==="none"){mx+=2;if(!/pod|berry|berries|samara|winged fruit/.test(b))sc+=2}
+    }
+    return {score:sc,max:mx,ratio:mx?sc/mx:0};
+  }
+  function pickName(t){return t.name||t.commonName||t.common||t.title||t.scientificName||t.scientific||t.species||"Unnamed tree"}
+  function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  window.rankZimbabweTrees=function(a){
+    return trees().map(t=>({...score(t,a),tree:t}))
+      .filter(x=>x.score>0).sort((x,y)=>y.ratio-x.ratio||y.score-x.score).slice(0,6);
+  };
+  window.showRankedTreeResults=function(a){
+    const out=document.getElementById("compareGrid"); if(!out)return;
+    const rs=window.rankZimbabweTrees(a||{});
+    if(!rs.length){out.innerHTML='<div class="id-result-note">No useful match yet. Leave one or more features as “unsure” and try again.</div>';return rs}
+    out.innerHTML=rs.map((r,i)=>{
+      const t=r.tree, name=pickName(t), sci=t.scientificName||t.scientific||t.latin||t.species||"";
+      const local=t.localNames||t.local||t.names||"", leaves=t.leaves||t.leaf||"", bark=t.bark||"", fruit=t.fruit||t.fruits||"", habitat=t.habitat||"";
+      const source=t.source||t.url||t.link||"";
+      return `<article class="compare-card"><span class="score-badge">${i===0?"Top match":"Possible match"} · ${r.score}/${r.max}</span><h3>${esc(name)}</h3><div class="latin">${esc(sci)}</div>${local?`<div><b>Local names:</b> ${esc(local)}</div>`:""}<ul>${leaves?`<li><b>Leaves:</b> ${esc(leaves)}</li>`:""}${bark?`<li><b>Bark:</b> ${esc(bark)}</li>`:""}${fruit?`<li><b>Fruit:</b> ${esc(fruit)}</li>`:""}${habitat?`<li><b>Habitat:</b> ${esc(habitat)}</li>`:""}</ul>${source?`<div class="compare-actions"><button onclick="window.open('${esc(source)}','_blank')">Open source / photos</button></div>`:""}</article>`;
+    }).join("");
+    document.getElementById("compare")?.scrollIntoView({behavior:"smooth",block:"start"});
+    return rs;
+  };
+  document.addEventListener("DOMContentLoaded",()=>{
+    const sec=document.getElementById("idkey")||document.querySelector('[id*="key"]');
+    if(sec&&!sec.querySelector(".id-result-note")){
+      const p=document.createElement("p");p.className="muted";p.innerHTML="<b>New:</b> uncertain answers are now handled by a ranked shortlist, so you can compare the most likely trees in the field.";sec.appendChild(p);
+    }
+  });
+})();
+
+
+/* Field Edition 1.5 — visual-first field workflow */
+(function(){
+  const visualGroups={
+    leaf:{
+      title:"Leaves",
+      tests:[
+        ["Compound / many leaflets",["compound","leaflets","pinnate","bipinnate","trifoliate"]],
+        ["Simple leaves",["simple leaf","simple","entire leaf","alternate leaves"]],
+        ["Large leathery leaves",["leathery","thickly leathery","large leaves"]],
+        ["Small leaves",["small leaves","small leaflets","tiny leaflets"]]
+      ]
+    },
+    bark:{
+      title:"Bark",
+      tests:[
+        ["Pale or cream, often smooth/flaking",["pale grey","pale gray","cream","smooth and flaking","greyish-cream"]],
+        ["Papery / peeling / flaking",["papery","peeling","flaking","exfoliating"]],
+        ["Dark or deeply fissured",["dark bark","deeply fissured","fissured","blackish"]],
+        ["Distinctive grey bark",["grey bark","gray bark","grey","gray"]]
+      ]
+    },
+    thorn:{
+      title:"Thorns and spines",
+      tests:[
+        ["No obvious thorns",["thornless","without thorns","no thorns"]],
+        ["Paired straight thorns",["paired thorns","paired thorn","stipular spines"]],
+        ["Hooked thorns",["hooked thorn","hooked spines","hooked"]],
+        ["Spines / prickles",["spines","prickles","thorny"]]
+      ]
+    },
+    flower:{
+      title:"Flowers",
+      tests:[
+        ["Cream / white flowers",["cream","creamy-white","white flowers","white flower"]],
+        ["Yellow flowers",["yellow flowers","yellow flower","yellow"]],
+        ["Pink / mauve / purple flowers",["mauve","lavender","purple flowers","pink flowers"]],
+        ["Red flowers",["red flowers","red flower"]]
+      ]
+    },
+    fruit:{
+      title:"Fruit and pods",
+      tests:[
+        ["Pods",["pod","pods"]],
+        ["Winged fruit",["winged","samara"]],
+        ["Berry / fleshy fruit",["berry","berries","fleshy fruit","fleshy"]],
+        ["Large distinctive fruit",["large fruit","large fruits"]]
+      ]
+    },
+    tree:{
+      title:"Whole tree / growth form",
+      tests:[
+        ["Broad spreading crown",["spreading","broad horizontal branches","broad crown"]],
+        ["Rock-splitting / rocky-hill tree",["rock-splitter","rocky hill","rocky habitats","kopje","granite"]],
+        ["Riverine / water-associated",["riverine","riparian","river","stream","wetland"]],
+        ["Dry woodland / bushveld",["dry woodland","bushveld","dry woodland and bushveld","sandveld"]]
+      ]
+    }
+  };
+
+  function getTrees(){return window.species||window.trees||window.treeData||[]}
+  function text(t){try{return JSON.stringify(t||{}).toLowerCase()}catch(e){return""}}
+  function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  function name(t){return t.name||t.commonName||t.common||t.title||t.scientificName||t.scientific||t.species||"Unnamed tree"}
+  function render(mode){
+    const box=document.getElementById("visualResults"), g=visualGroups[mode];
+    if(!box||!g)return;
+    let cards=[];
+    g.tests.forEach(([label,terms])=>{
+      getTrees().forEach(t=>{
+        const b=text(t), hits=terms.filter(x=>b.includes(x)).length;
+        if(hits){
+          cards.push({t,label,hits});
+        }
+      });
+    });
+    const seen=new Set(), unique=[];
+    cards.sort((a,b)=>b.hits-a.hits);
+    cards.forEach(x=>{const n=name(x.t);if(!seen.has(n)){seen.add(n);unique.push(x)}});
+    const top=unique.slice(0,12);
+    box.innerHTML=top.length?top.map(x=>{
+      const t=x.t, sci=t.scientificName||t.scientific||t.latin||t.species||"";
+      const local=t.localNames||t.local||t.names||"", source=t.source||t.url||t.link||"";
+      const clue=t.fieldClue||t.spotCharacters||t.description||t.leaves||t.bark||t.habitat||"";
+      return `<article class="visual-tile"><h3>${esc(name(t))}</h3><div class="latin">${esc(sci)}</div>${local?`<div><b>Local:</b> ${esc(local)}</div>`:""}<p class="clue"><b>${esc(g.title)} clue:</b> ${esc(clue)}</p>${source?`<div class="visual-source"><button onclick="window.open('${esc(source)}','_blank')">Open photos / source</button></div>`:""}</article>`;
+    }).join(""):'<div class="id-result-note">No entries match this visual group yet.</div>';
+  }
+  document.addEventListener("DOMContentLoaded",()=>{
+    document.querySelectorAll("#lookAtButtons button").forEach(b=>b.addEventListener("click",()=>render(b.dataset.mode)));
+  });
+})();
+
+
+/* Field Edition 1.5 — source-linked photographic gallery */
+(function(){
+  function gallery(){
+    const box=document.getElementById("photoGrid");
+    if(!box || typeof photos==="undefined" || typeof trees==="undefined") return;
+    const cards=trees.filter(t=>photos[t.c]).map(t=>{
+      const p=photos[t.c], direct=/\.(jpg|jpeg|png|webp)(\?|$)/i.test(p[0]);
+      return `<article class="photo-tile">${direct
+        ? `<a href="${p[2]}" target="_blank"><img loading="lazy" src="${p[0]}" alt="${t.c} — ${t.s}" onerror="this.outerHTML='<div class=&quot;photo-missing&quot;>Photo preview unavailable<br>Open record below</div>'"></a>`
+        : `<div class="photo-missing">📷<br>Open photographic record</div>`}
+        <b>${String(t.c).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}</b>
+        <div class="latin">${String(t.s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}</div>
+        <div style="margin-top:5px"><a href="${p[2]}" target="_blank">Open full record</a></div>
+      </article>`;
+    });
+    box.innerHTML=cards.length?cards.join(""):'<div class="id-result-note">Photographs will be added as source records become available.</div>';
+  }
+  document.addEventListener("DOMContentLoaded",gallery);
+})();
+
+</script>
+</body>
+</html>
